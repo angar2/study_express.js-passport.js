@@ -9,6 +9,7 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const flash = require('connect-flash');
 
 const indexRouter = require('./routes/index.js');
 const topicRouter = require('./routes/topic.js');
@@ -24,6 +25,7 @@ app.use(session({
     saveUninitialized: true,
     store: new FileStore(),
 }));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -71,7 +73,8 @@ passport.use(new LocalStrategy(
 
 app.post('/auth/login', passport.authenticate('local', {
     successRedirect: '/',
-    failureRedirect: '/auth/login'
+    failureRedirect: '/auth/login',
+    failureFlash: true
 }));
 
 app.get('*',(request, response, next) => {

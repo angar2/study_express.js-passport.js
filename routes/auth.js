@@ -13,12 +13,18 @@ const auth = require('../lib/auth.js');
 // }
 
 router.get('/login', (request, response) => {
+    var fmsg = request.flash();
+    var feedback = '';
+    if(fmsg.error) {
+        feedback = `<p>${fmsg.error[0]}</p>`;
+    }
     var title = 'Login';
     var list = template.list(request.filelist);
     var HTML = template.HTML(title, list,
         `<form action="/auth/login" method="post">
             <p><input type="text" name="email" placeholder="Email" /></p>
             <p><input type="password" name="password" placeholder="Password" /></p>
+            ${feedback}
             <p><input type="submit" value="Login" /></p>
         </form>`,
         `<h2>${title}</h2>`,
