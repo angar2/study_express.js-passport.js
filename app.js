@@ -7,6 +7,8 @@ const compression = require('compression');
 const helmet = require('helmet');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
 const indexRouter = require('./routes/index.js');
 const topicRouter = require('./routes/topic.js');
