@@ -43,7 +43,10 @@ router.get('/login', (request, response) => {
 // });
 
 router.get('/logout', (request, response) => {
-    request.session.destroy(function(error) {
+    request.logout(function(error) {
+        if(error) {
+            return next(error); 
+        }
         response.redirect('/');
     });
 });
