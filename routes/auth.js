@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const sanitizeHTML = require('sanitize-html');
 const passport = require('passport');
+const shortid = require('shortid');
+
+
 const template = require('../lib/template.js');
 const auth = require('../lib/auth.js');
 
@@ -42,6 +45,7 @@ router.post('/signup', (request, response) => {
     var password2 = post.password2;
     var displayName = post.displayName;
     db.get('users').push({
+        id: shortid.generate(),
         email: email,
         password: password,
         displayName: displayName
