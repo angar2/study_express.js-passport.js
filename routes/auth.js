@@ -6,15 +6,9 @@ const sanitizeHTML = require('sanitize-html');
 const passport = require('passport');
 const shortid = require('shortid');
 
-
 const template = require('../lib/template.js');
 const auth = require('../lib/auth.js');
-
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-const adapter = new FileSync('db.json');
-const db = low(adapter);
-// db.defaults({ users: [] }).write();
+const db = require('../lib/db.js');
 
 router.get('/signup', (request, response) => {
     var fmsg = request.flash();
