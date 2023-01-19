@@ -5,6 +5,7 @@ const path = require('path');
 const sanitizeHTML = require('sanitize-html');
 const passport = require('passport');
 const shortid = require('shortid');
+const bcrypt = require('bcrypt');
 
 const template = require('../lib/template.js');
 const auth = require('../lib/auth.js');
@@ -43,13 +44,15 @@ router.post('/signup', (request, response) => {
         request.flash('error','비밀번호 확인 바람');
         response.redirect('/auth/signup');
     } else {
-        db.get('users').push({
-            id: shortid.generate(),
-            email: email,
-            password: password,
-            displayName: displayName
-        }).write();
-        response.redirect('/');
+        bcrypt.hash(password, 10, function(err, hash) {
+            db.get('users').push({
+                id: shortid.generate(),
+                email: email,
+                password: hash,
+                displayName: displayName
+            }).write();
+            response.redirect('/');
+        });
     }
 });
 
