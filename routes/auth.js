@@ -7,6 +7,12 @@ const passport = require('passport');
 const template = require('../lib/template.js');
 const auth = require('../lib/auth.js');
 
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+const adapter = new FileSync('db.json');
+const db = low(adapter);
+// db.defaults({ users: [] }).write();
+
 router.get('/signup', (request, response) => {
     var fmsg = request.flash();
     var feedback = '';
@@ -27,6 +33,20 @@ router.get('/signup', (request, response) => {
         auth.Status(request, response)
     );
     response.send(HTML);
+});
+
+router.post('/signup', (request, response) => {
+    var post = request.body;
+    var email = post.email;
+    var password = post.password;
+    var password2 = post.password2;
+    var displayName = post.displayName;
+    db.get('users').push({
+        email: email,
+        password: password,
+        displayName: displayName
+    }).write();
+    response.redirect('/');
 });
 
 router.get('/login', (request, response) => {
