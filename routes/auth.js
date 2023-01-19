@@ -30,6 +30,7 @@ router.get('/signup', (request, response) => {
             <p><input type="password" name="password" placeholder="Password" /></p>
             <p><input type="password" name="password2" placeholder="Confirm Password" /></p>
             <p><input type="text" name="displayName" placeholder="Display Name" /></p>
+            ${feedback}
             <p><input type="submit" value="Sign up" /></p>
         </form>`,
         `<h2>${title}</h2>`,
@@ -44,13 +45,18 @@ router.post('/signup', (request, response) => {
     var password = post.password;
     var password2 = post.password2;
     var displayName = post.displayName;
-    db.get('users').push({
-        id: shortid.generate(),
-        email: email,
-        password: password,
-        displayName: displayName
-    }).write();
-    response.redirect('/');
+    if(password !== password2) {
+        request.flash('error','비밀번호 확인 바람');
+        response.redirect('/auth/signup');
+    } else {
+        db.get('users').push({
+            id: shortid.generate(),
+            email: email,
+            password: password,
+            displayName: displayName
+        }).write();
+        response.redirect('/');
+    }
 });
 
 router.get('/login', (request, response) => {
@@ -77,7 +83,7 @@ router.get('/login', (request, response) => {
 router.post('/login', passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/auth/login',
-    failureFlash: true
+    failureFlash: true,
 }));
 
 router.get('/logout', (request, response) => {
