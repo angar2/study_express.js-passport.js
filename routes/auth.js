@@ -45,13 +45,19 @@ router.post('/signup', (request, response) => {
         response.redirect('/auth/signup');
     } else {
         bcrypt.hash(password, 10, function(err, hash) {
-            db.get('users').push({
-                id: shortid.generate(),
-                email: email,
-                password: hash,
-                displayName: displayName
-            }).write();
-            response.redirect('/');
+            var user = db.get('users').find({email: email});
+            if(user) {
+                request.flash('error','계정이 이미 존재함');
+                response.redirect('/auth/signup');
+            } else {
+                db.get('users').push({
+                    id: shortid.generate(),
+                    email: email,
+                    password: hash,
+                    displayName: displayName
+                }).write();
+                response.redirect('/');
+            }
         });
     }
 });
